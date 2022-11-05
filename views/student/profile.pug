@@ -1,0 +1,233 @@
+extends layout
+
+block content
+  main.container
+    .columns(style="padding: 6em 0 0 0; max-width: 560px")
+      .column
+        is-size-3.has-text-right Progress #[span= (progress/2047*100).toFixed(2)+'%']
+        progress.progress.is-info.is-small(value=progress, max="2047")
+        #tabs.tabs.is-toggle
+          ul(style='flex-direction: column; align-items: normal')
+            li.a.is-active
+              a Home
+            li.p
+              a Personal
+            li.c
+              a Contact
+            li.e
+              a Educational
+            li.o
+              a Others
+  
+      .column.is-two-thirds
+        form(enctype='multipart/form-data',name='signup',method='post',style='min-height: 500px' action="/student/profile")
+          .content-a
+            .field
+              label.label Name
+              input.input(type="text",placeholder="Name",title="Enter your full name.",name="name", disabled, value=name)
+            .field
+              label.label CNIC
+              input.input.form-field-required(type="tel",placeholder="National ID Card Number",title="Enter your ID card number. It is of form 35202-0000000-0",pattern="\\d{5}\-?\\d{7}\-?\\d",name="cnic-", disabled, value=cnic)
+              input(type="text" name="cnic",hidden , value=cnic)
+            if status == 1
+              .buttons
+                .button.is-info#btn-grant Grant
+                .button.is-info#btn-internship Internship
+          .content-p.is-hidden
+            .field
+              label.label City of Residence
+              .select.is-fullwidth
+                select.is-fullwidth(name='city')
+                  each c in ['lahore', 'islamabad', 'karachi']
+                    if city == c
+                      option(value=c, selected)= c
+                    else
+                      option(value=c)= c
+            .field
+              label.label Please upload a .jpg of your passport size photo.
+              p.control.has-icons-right
+                input.input.form-field-required(type="file",name="imgpic", )
+                span.icon.is-right
+                  if (progress & code.imgpic) == code.imgpic
+                    img(src=imgpic)
+          .content-c.is-hidden
+            .field
+              label.label Phone
+              input.input.form-field-required(type="tel",placeholder="Phone",title="Enter your phone number. It is of form 03xx xxxxxxx",pattern="03\\d\\d ?\\d{7}",name="phone", value=phone)
+            .field
+              label.label Email
+              input.input(type="email",placeholder="Email",title="Enter your email.",name="email", value=email)
+          .content-e.is-hidden
+            .field
+              label.label Please Select a University.
+              .select.is-fullwidth
+                select.is-fullwidth(name="university", disabled)
+                  each val, key in {"UET": `Engineering University`, "ITU": `Information Technology University`}
+                    if key == university
+                      option(value=key, selected)= val
+                    else
+                      option(value=key)= val
+            .field
+              label.label Please upload a .jpg of your University Admission Slip or University Card
+              p.control.has-icons-right
+                input.input.form-field-required(type="file",name="imguni" )
+                span.icon.is-right
+                  if (progress & code.imguni) == code.imguni
+                    img(src=imguni)
+            .field
+              label.label Please upload a .jpg of your College Result Card.
+              p.control.has-icons-right
+                input.input.form-field-required(type="file",name="imgres" )
+                span.icon.is-right
+                  if (progress & code.imgres) == code.imgres
+                    img(src=imgres)
+          .content-o.is-hidden
+            .field
+              label.label Please upload a .jpg of your Electricity Bill.
+              p.control.has-icons-right
+                input.input.form-field-required(type="file",name="imgbill" )
+                span.icon.is-right
+                  if (progress & code.imgbill) == code.imgbill
+                    img(src=imgbill)
+            .field
+              label.label Please upload a .jpg of your CNIC
+              p.control.has-icons-right
+                input.input.form-field-required(type="file",name="imgcnic" )
+                span.icon.is-right
+                  if (progress & code.imgcnic) == code.imgcnic
+                    img(src=imgcnic)
+          .content-f.is-hidden
+          button#btnsubmit.mt-5.button.is-info.is-fullwidth(type='submit', style='position: absolute;bottom: 10px;right: 10px;') Save
+      .modal#modal-grant
+        .modal-background
+        .modal-content.has-background-white.p-5
+          if grant == undefined
+            h1.title Please Upload the following stuff.
+            form(method='post', enctype='multipart/form-data', name='grant')
+              .field
+                label.label University Fee Slip
+                input.input(type="file", name="imgfee",required)
+              button.button.is-success(type="submit") Submit
+          else
+            h1.title Your application for a grant is in progress.
+      .modal#modal-internship
+        .modal-background
+        .modal-content.has-background-white.p-5.is-rounded
+          if internship == undefined
+            h1.title Please Upload the following stuff.
+            form(action='/student/internship',method='post', enctype='multipart/form-data', name='internship')
+              .field
+                label.label Resume
+                  input.input(type="file", name="imgcv",required)
+              .field
+                label.label Transcript
+                  input.input(type="file", name="imgtranscript")
+              h3.is-4 Skills
+              style.
+                label.label{margin-right: 1em}
+                label.label input{float: left; margin-right: 0.5em; margin-top: 0.3em}
+              .field(style="display: flex; flex-wrap: wrap;")
+                label.label OOP
+                  input(type="checkbox" value="oop" name="skills")
+                label.label Java
+                  input(type="checkbox" value="java" name="skills")
+                label.label App Dev
+                  input(type="checkbox" value="appdev" name="skills")
+                label.label Unity
+                  input(type="checkbox" value="gamedev" name="skills")
+                label.label C++
+                  input(type="checkbox" value="cpp" name="skills")
+              button.button.is-success(type="submit") Submit
+          else
+            h1.title Your application for an internship is in progress.
+      .messages
+        if status == 2
+          .message.is-danger
+            .message-header
+              p Important!!! Application Rejected
+            .message-body
+              p= msg
+              p Don't worry. Just resave with correct Data.
+            .message-body
+              p If there seems to be a mistake on our end... #[a(href='/complaint') Contact Us]
+        if progress >= 2047 && status == 3
+          .message.is-alert
+            .message-header
+              p Hey There
+              button.delete(onclick="this.parentElement.parentElement.classList.add('is-hidden')")
+            .message-body
+              p Your application is being processed. Please be patient.
+        .message.is-success.is-hidden#modal-success
+          .message-header
+            p Success
+            button.delete(onclick="this.parentElement.parentElement.style.display='none'")
+          .message-body Operation was Successfull
+        .message.is-alert.is-hidden#modal-failure
+          .message-header
+            p Failure
+            button.delete(onclick="this.parentElement.parentElement.style.display='none'")
+          .message-body Operation Failed Please Try again. If the error persists, may be try again at a later time or contact the support.
+        .message.is-alert
+          .message-header
+            p Important
+            button.delete(onclick="this.parentElement.parentElement.style.display='none'")
+          .message-body You can save your progress at any time but compeleting the form is necessary. Once your progress reaches 100% you will have to wait for registration process to complete (usually takes about a few hours) after which you will get Grant and Internship Buttons in Home Tab. Incase your application for Grant or Internship is in Progress, these buttons will be disabled.
+          
+
+block _scripts
+  script.
+    document.signup.onsubmit = (e)=>{
+      e.preventDefault()
+      submitForm('/student/profile', document.signup, document.getElementById('btnsubmit'), (e)=>{
+        let elem = e?'modal-success': 'modal-failure'
+        document
+          .getElementById(elem)
+          .classList.toggle('is-hidden')
+          setTimeout(()=>{
+            document.getElementById(elem).classList.add('is-hidden')
+          }, 10000)
+        //window.location.reload()
+      })
+    }
+    let t = document.getElementById('tabs'), c = Array.of(...document.querySelectorAll('div[class^=content-]'))
+    Array.of(...t.getElementsByTagName('a')).forEach(e=>{
+      e.onclick = (e)=>{
+        c.forEach(e=>e.classList.add('is-hidden'))
+        document.getElementsByClassName('content-'+e.target.parentElement.classList.item(0))[0].classList.remove('is-hidden')
+        t.getElementsByClassName('is-active')[0].classList.remove('is-active');
+        e.target.parentElement.classList.add('is-active')
+        return false
+      }
+    })
+
+    Array(...document.getElementsByClassName('modal-background')).forEach(e=>e.onclick = e=>e.target.parentElement.classList.remove('is-active'))
+    document.querySelector('#btn-grant').onclick = (e)=>document.getElementById('modal-grant').classList.add('is-active')
+    document.querySelector('#btn-internship').onclick = (e)=>document.getElementById('modal-internship').classList.add('is-active')
+    document.grant.onsubmit = (e)=>{
+      e.preventDefault()
+      submitForm('/student/grant', document.grant, document.grant.getElementsByTagName('button')[0], (e)=>{
+        document.getElementById('modal-grant').classList.remove('is-active')
+        let elem = e?'modal-success': 'modal-failure'
+        document
+          .getElementById(elem)
+          .classList.toggle('is-hidden')
+          setTimeout(()=>{
+            document.getElementById(elem).classList.add('is-hidden')
+          }, 10000)
+      })
+      return false
+    }
+    document.internship.onsubmit = (e)=>{
+      e.preventDefault()
+      submitForm('/student/internship', document.internship, document.internship.getElementsByTagName('button')[0], (e)=>{
+        document.getElementById('modal-internship').classList.remove('is-active')
+        let elem = e?'modal-success': 'modal-failure'
+        document
+          .getElementById(elem)
+          .classList.toggle('is-hidden')
+          setTimeout(()=>{
+            document.getElementById(elem).classList.add('is-hidden')
+          }, 10000)
+      })
+      return false
+    }

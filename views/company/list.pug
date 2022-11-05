@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  if students.length
+    table.table.mt-6.pt-6(style="margin: auto; max-width: 1280px;")
+      thead
+        tr
+          th Name
+          th Email
+          th Phone
+          th University
+          th Transcript
+          th Resume
+  
+      tbody
+        each item in students
+          tr
+            td= item.name
+            td: a(href="mailto: "+item.email)= item.email
+            td= item.phone
+            td= item.university
+            td: a(href=item.imgtranscript target="_blank") Transcript
+            td: a(href=item.imgcv target="_blank") Resume
+  else
+    h1.title.is-4.pt-6.mt-6(style="text-align: center; width: 75%; margin: auto;") Wow! There is literally no one to show!!! Please change your preferences a little.

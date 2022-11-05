@@ -1,0 +1,148 @@
+body, button, input, select{
+  font-family:  'Poppins','Fredoka', 'Helvetica', sans-serif;
+}
+
+.btn {
+  background-color: #614cae; /* Green */
+  border-radius: 0.5em;
+  color: #ffffff;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+}
+
+
+.centered-box{
+  max-width: 590px;
+  margin: auto;
+  border-radius: 1em;
+  padding: 4em 2.5em;
+  background: white;
+}
+.navbar {
+  display: flex
+}
+.navbar-burger {
+  padding-top: 15px
+}
+
+.modal-content{
+  border-radius: 1em;
+  padding: 2em 2.5em
+}
+header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0,0,0,0.7);
+  z-index: 1111;
+}
+header.scrolled{
+  background: white;
+}
+
+header .navbar .navbar-item .navbar-dropdown{
+  background: white !important;
+  color: black !important;
+}
+
+header .navbar .navbar-item .navbar-dropdown a{
+  color: black !important;
+}
+
+header  *{
+  background: transparent !important;
+  color: white !important;
+}
+
+header.scrolled  *{
+  background: white !important;
+  color: black !important;
+}
+.tabs.is-toggle li.is-active a {
+  background-color: #3e8ed0;
+  border-color: #3e8ed0;
+}
+.login-bg{
+  background: url('https://whmcsglobalservices.com/wp-content/uploads/2018/09/login-bg.jpg');
+  background-size: cover;
+  min-height: 100vh;
+  padding: 2em;
+  padding-top: 6em;
+}
+
+
+.signup-bg{
+  background: url('https://wallpaperaccess.com/full/274198.jpg');
+  background-size: cover;
+  min-height: 100vh;
+  padding: 2em;
+  padding-top: 6em;
+}
+.button{
+  font-weight: bold;
+  padding-top: 10px;
+}
+form{
+  position: relative;
+}
+
+.box{
+  max-width: 960px;
+  border-radius: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 3em 4em;
+  background: white;
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+  flex: 1;
+}
+
+@media (min-width: 481px){
+  .box:not(:last-child){
+    margin-right: 2em;
+    margin-bottom: 0;
+  }
+}
+
+.messages{
+  max-width: 300px;
+  position: absolute;
+  right: 1em;
+  top: 5em;
+  z-index: 1111;
+}
+.container{
+  position: static;
+}
+
+@media (max-width: 480px){
+  .is-flex{
+    display: block !important;
+  }
+  .messages{
+    top: initial;
+    bottom: 0;
+  }
+  .navbar-menu{
+  position: absolute;
+  top:0;
+  left: 0;
+  background: black !important;
+  z-index: 111;
+}
+  
+header{
+  width: 100vw;
+}
+  
+main, footer, header{
+  padding: 1em
+}
+
+}
+
+

@@ -1,0 +1,48 @@
+extends layout
+block content
+  .container.p-6.mt-6
+    .block
+      .select
+        select#uni(name="uni")
+          option(value='', selected=option==undefined) ALL
+          for uni in ['ITU', 'UET']
+            option(value=uni, selected=uni==option)= uni.toUpperCase()
+    if data.length == 0
+        h3.title.is-4 Nothing to Show Here
+    else
+      .block.table-container
+        table.table.is-tripped.is-hoverable
+          thead
+            tr
+              each value, key in data[0]
+                - if(!['password', '_id', '__v', 'status', 'progress', 'facebook' ,'website', 'skills', 'msg'].includes(key))
+                    th= key
+          tbody
+            each item in data
+              tr
+                each value, key in item
+                  if key == 'name'
+                    td: a(href=`/admin/students/${item._id}`)= item.name
+                  else if key == 'grant' || key == 'internship'
+                    td= (['','Foregoing', 'Rejected', 'Pending'])[value]
+                  else if(!['password', '_id', '__v', 'status', 'progress', 'facebook' ,'website', 'skills', 'msg'].includes(key))
+                    td= value     
+      
+      nav.pagination.block
+        if page <= 0
+          a.pagination-previous.is-disabled Previous
+        else
+          a.pagination-previous(href=`/admin/students?page=${parseInt(page)-1}`) Previous
+        a.pagination-next(href=`/admin/students?page=${parseInt(page)+1}`) Next
+
+
+  script.
+    document.getElementById('uni').onchange = (e)=>{
+      let q = new URLSearchParams(window.location.search.toString())
+      q.delete('university')
+      if (e.target.value)
+        q.append('university', e.target.value)
+      let s = '?'
+      q.forEach((k, v)=>s+=v+'='+k+'&')
+      window.location.search = s
+    }

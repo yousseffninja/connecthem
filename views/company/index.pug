@@ -1,0 +1,112 @@
+extends layout
+block content
+  style.
+    .skills{display: flex; flex-wrap: wrap;}
+    label{margin-right: 0.5em;}
+  .container
+    if status == 2
+      h1.title.is-2 Sorry to say but your profile has been blocked.
+      h2.title.is-3: a(href="/contact") Contact Support
+    else
+      .columns.p-6
+        .column
+          h1.title.is-4 #{name} - Company Profile #[a.icon(onclick="document.getElementById('edit').classList.toggle('is-active')"): img(src='https://cdn-icons-png.flaticon.com/512/6065/6065488.png')]
+          .icon-text.block
+            span.icon: img(src='https://icons-for-free.com/iconfiles/png/512/envelope-131965017430203317.png')
+            span= email
+          .icon-text.block
+            span.icon: img(src='https://static.thenounproject.com/png/52971-200.png')
+            span= phone
+          .icon-text.block
+            span.icon: img(src='https://cdn-icons-png.flaticon.com/512/684/684833.png')
+            span= cnic
+          a.button.is-link(onclick="window.location=('/company/students?skills='+skills.reduce((acc, e)=>acc+'+'+e))") Students
+          .modal#edit
+            .modal-background(onclick="this.parentElement.classList.remove('is-active')")
+            .modal-content(style="background: white")
+              form(method="post" name="update" action="/company/edit")
+                .control
+                  label.label CNIC
+                  input.input(name="cnic" type="text" pattern="\\d{5}-?\\d{7}-?\\d" value=cnic required)
+                .control
+                  label.label Phone
+                  input.input(name="phone" type="tel" pattern="\\d{11}" value=phone requires)
+                .control
+                  label.label Email
+                  input.input(name="email" type="email" value=email required)
+                .control
+                  label.label Password
+                  input.input(name="password" type="password" required)
+                .control
+                  label.label Change Password
+                    input.checkbox.is-pulled-left.mr-1.mt-3(type="checkbox" name="changepassword" onchange="let e = document.querySelector('#newpass'); e.classList.toggle('is-hidden'); e.querySelector('input').toggleAttribute('disabled')")
+                .control.is-hidden#newpass
+                  label.label New Password
+                  input.input(type="password" name="newpassword" disabled required)
+                button.button.is-link.mt-2(type="submit") Save
+          form(method='post' name='skillsform')
+            h3.title.is-4.mt-4 Salary Range
+            .select
+              select(id="salary")
+                option(value="15-20" selected=salary=="15-20") Rs. 15,000 - 20,000
+                option(value="20-25" selected=salary=="20-25") Rs. 20,000 - 25,000
+                option(value="25-30" selected=salary=="25-30") Rs. 25,000 - 30,000
+                option(value="30-35" selected=salary=="30-35") Rs. 35,000 - 40,000
+            h3.title.is-4.mt-4 Required Skills
+            .tabs
+              ul
+                each skillset in Object.keys(allskills)
+                  li.js-toggle(data-toggle='#'+skillset.toLowerCase().replace(/[\s|\W]/, '-')): a= skillset
+            each value, skillset in allskills
+              .skills.is-hidden(id=skillset.toLowerCase().replace(/[\s|\W]/, '-'))
+                each inp in value
+                  label.checkbox.
+                    #[input(type='checkbox' value=inp.replace(/[\s|\W]/, '-') checked=skills.includes(inp))]
+                    #[span= inp]
+            button.button.is-link.mt-3(type='submit') Submit
+            
+        figure.column
+          img(src='https://www.pngitem.com/pimgs/m/30-307416_profile-icon-png-image-free-download-searchpng-employee.png', style="border-radius: 50%; width: 400px; height: 400px; object-fit: cover")
+
+  script.
+    document.querySelectorAll('.js-toggle').forEach(e=>e.addEventListener('click', ()=>{
+      let elem = document.querySelector(e.getAttribute('data-toggle'))
+      for (let c of elem.parentElement.children){
+        if (c.classList.contains('is-active')){
+          c.classList.remove('is-active')
+          c.classList.add('is-hidden')
+          break
+        }
+      }
+      elem.classList.remove('is-hidden')
+      elem.classList.add('is-active')
+      for (let c of e.parentElement.children){
+        if (c.classList.contains('is-active')){
+          c.classList.remove('is-active')
+          break
+        }
+      }
+      e.classList.add('is-active')
+    }))
+    let skills = Array.from(document.querySelectorAll('input:checked')).map(e=>e.value)
+    console.log(skills)
+    document.querySelectorAll('input[type=checkbox]').forEach(e=>{
+      e.addEventListener('click', ()=>{
+        if (skills.includes(e.value)){
+          skills = skills.filter(s=>s!=e.value)
+        } else {
+          skills.push(e.value)
+        }
+      })
+    })
+    document.skillsform.onsubmit = (e)=>{
+      e.preventDefault()
+      axios.post('/company/update', {skills, salary: document.skillsform.querySelector('select').value})
+      .then((data)=>{
+        if (data.status)
+          alert("saved")
+        else throw Error('Failed')
+      }).catch((e)=>{
+        alert(e)
+      })
+    }

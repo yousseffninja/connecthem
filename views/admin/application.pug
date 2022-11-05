@@ -1,0 +1,80 @@
+extends layout
+block content
+  .hero.is-link.is-medium
+    .hero-body.has-text-centered
+      h1.title.is-1 Application
+  .columns.box.p-5(style="margin-top: -5em !important; max-width: 720px; margin: auto; border-radius: 1.2em")
+    .column
+      each value, key in attrs
+        unless ['password', '__v', 'progress', 'status'].includes(key) || key.startsWith('img')
+          div.block
+            label.label= key.toUpperCase()
+            p.is-rounded.is-bordered= value
+    .column
+      figure.block(style="text-align: center")
+        img.is-rounded(src=attrs.imgpic, style='object-fit: cover; width:300px; height:300px; border-radius: 50%')
+      .images.block(style='display: flex; gap: 10px; flex-wrap: wrap')
+        each value, key in attrs
+          if key.startsWith('img') && key!='imgpic'
+            figure.image.is-128x128(style='overflow: hidden')
+              img.modal-trigger(src=value)
+      .buttons.is-justify-content-right.block
+        button#accept.button.is-success Accept
+        button#modal-reject-toggle.button.is-danger Reject
+  .modal#modal
+    .modal-background
+    figure.modal-content.image
+      img#modal-image(src='')
+
+  .modal#modal-reject
+    .modal-background
+    figure.modal-content
+      form
+        textarea.input#msg(name='msg'  required placeholder='reasons...')
+        button.button.is-danger(type=submit)#reject Reject
+
+block scripts
+  script.
+    Array.of(...document.getElementsByClassName('modal-trigger')).forEach((e)=>{
+      e.onclick = ()=>{
+        document.getElementById('modal-image').src = e.src
+        document.getElementById('modal').classList.toggle('is-active')
+      }
+    })
+    Array.of(...document.getElementsByClassName('modal-background')).forEach((e)=>{
+      e.onclick = (e)=>{
+        e.target.parentElement.classList.remove('is-active')
+      }
+    })
+    document.getElementById('accept').onclick = (e)=>{
+      axios.post('/admin/accept', 
+          {id: window.location.href.substring(window.location.href.lastIndexOf('/') + 1)}
+      ).then(()=>{
+        alert("Accepted")
+        window.history.go(-1)
+      }).catch(()=>{
+        alert("error occured")
+        e.target.disabled = false;
+        e.target.classList.remove('is-loading')
+      })
+      e.target.disabled = true;
+      e.target.classList.add('is-loading')
+    }
+    document.getElementById('modal-reject-toggle').onclick = ()=>
+      document.getElementById('modal-reject').classList.add('is-active')
+    document.getElementById('reject').onclick = (e)=>{      
+      axios.post('/admin/reject', {
+        id: window.location.href.substring(window.location.href.lastIndexOf('/') + 1),
+        msg: document.getElementById('msg').value
+      }).then(()=>{
+        alert("Rejected")
+        window.history.go(-1)
+      }).catch(()=>{
+        alert("error occured")
+        e.target.disabled = false;
+        e.target.classList.remove('is-loading')
+        document.getElementById('modal-reject').classList.remove('is-active')
+      })
+      e.target.disabled = true;
+      e.target.classList.add('is-loading')
+    }

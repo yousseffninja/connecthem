@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    title Connecthem - Company Profile
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css', type="text/css")
+    link(href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap", rel="stylesheet")
+    link(href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap", rel="stylesheet")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    block links
+    
+  body(class=bodyClass)
+    include nav
+    block content
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js")
+    script(src="/javascripts/application.js")
+    script.
+      let header = document.getElementsByTagName('header')[0]
+      window.onscroll = ()=>{
+        if (window.scrollY > 768){
+          header.classList.add('scrolled')
+        } else{
+          header.classList.remove('scrolled')
+        }
+      }
+    block scripts
