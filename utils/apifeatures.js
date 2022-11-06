@@ -6,7 +6,7 @@ class APIFeatures {
 
   filter() {
     const queryObj = { ...this.queryString };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    const excludedFields = ['page', 'sort', 'limit', 'fields', 'select'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
     let queryStr = JSON.stringify(queryObj);
@@ -46,7 +46,7 @@ class APIFeatures {
     const page = this.queryString.page * 1 || 1;
     const limit = this.queryString.limit * 1 || 100;
     const skip = (page - 1) * limit;
-    this.query = this.query.skip(skip).limit(limit);
+    this.query = this.query.skip(skip).limit(limit).lean();
 
     return this;
   }
