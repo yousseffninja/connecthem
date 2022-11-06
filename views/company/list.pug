@@ -1,6 +1,20 @@
 extends layout
 
 block content
+
+  form.mt-6.pt-6.w-50.d-flex(style="margin: auto; max-width: 1280px;")(role='form' method='GET' action=`https://connecthem.yousseffninja.repl.co/company/students`)
+    div.form-group
+      label(for='name') Search:
+      if params.length
+        if params.constructor == Array
+          each param in params
+            input#name.form-control(type='text', placeholder='Add the skill here' name='skills[in]' value=param)
+        else
+          input#name.form-control(type='text', placeholder='Add the skill here' name='skills[in]' value=params)
+        input#name.form-control(type='text', placeholder='Add the skill here' name='skills[in]')
+      else
+        input#name.form-control(type='text', placeholder='Add the skill here' name='skills[in]')
+      button(type="Add") Submit
   if students.length
     table.table.mt-6.pt-6(style="margin: auto; max-width: 1280px;")
       thead
@@ -11,7 +25,7 @@ block content
           th University
           th Transcript
           th Resume
-  
+
       tbody
         each item in students
           tr

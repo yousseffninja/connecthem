@@ -19,7 +19,10 @@ const student = {
   internship: {
     type: Number, enum : [1, 2, 3]
   },
-  skills: [String],
+  skills: {
+    type: Array,
+    default: ['Web']
+  },
   imgcnic: String,
   imgres: String,
   imguni: String,
